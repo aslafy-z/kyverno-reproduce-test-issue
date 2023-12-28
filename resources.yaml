@@ -1,0 +1,20 @@
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-pass
+spec:
+  ingressClassName: not-empty
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-fail
+spec:
+  ingressClassName: ""
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-skip
+spec: {}

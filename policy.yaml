@@ -1,0 +1,43 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: check-ingress-class-name
+spec:
+  background: true
+  validationFailureAction: Enforce
+  rules:
+    - name: set-ingress-class-name
+      match:
+        any:
+          - resources:
+              kinds:
+                - Ingress
+      preconditions:
+        all:
+          - key: ["ingressClassName"]
+            operator: AnyNotIn
+            value: "{{ keys(request.object.spec || `{}`) }}"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            ingressClassName: default-value
+    - name: check-ingress-class-name
+      match:
+        any:
+          - resources:
+              kinds:
+                - Ingress
+      preconditions:
+        all:
+          - key: ["ingressClassName"]
+            operator: AnyIn
+            value: "{{ keys(request.object.spec || `{}`) }}"
+      validate:
+        deny:
+          conditions:
+            any:
+              - key: "{{ length(request.object.spec.ingressClassName) }}"
+                operator: Equals
+                value: 0
+        message: '"{{request.object.spec.ingressClassName}}" should not be empty.'

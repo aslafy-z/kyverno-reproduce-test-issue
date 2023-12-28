@@ -1,0 +1,28 @@
+---
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: check-ingress-class-name
+policies:
+  - ./policy.yaml
+resources:
+  - ./resources.yaml
+results:
+  - kind: Ingress
+    policy: check-ingress-class-name
+    rule: check-ingress-class-name
+    resources:
+      - ingress-pass
+    result: pass
+  - kind: Ingress
+    policy: check-ingress-class-name
+    rule: check-ingress-class-name
+    resources:
+      - ingress-skip
+    result: skip
+  - kind: Ingress
+    policy: check-ingress-class-name
+    rule: check-ingress-class-name
+    resources:
+      - ingress-fail
+    result: fail
